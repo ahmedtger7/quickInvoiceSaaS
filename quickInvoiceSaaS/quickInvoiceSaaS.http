@@ -1,0 +1,6 @@
+@quickInvoiceSaaS_HostAddress = http://localhost:5017
+
+GET {{quickInvoiceSaaS_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

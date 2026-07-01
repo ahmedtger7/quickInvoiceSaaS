@@ -1,0 +1,192 @@
+﻿@model IEnumerable<QuickInvoiceSaaS.Models.Invoice>
+
+@{
+    ViewData["Title"] = "إدارة فواتير الشركة";
+    var currentTenant = ViewData["CurrentTenant"]?.ToString() ?? "كل الشركات";
+}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .stat-cards-container {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        flex: 1;
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-right: 5px solid #198754;
+    }
+
+        .stat-card.blue {
+            border-right-color: #0dcaf0;
+        }
+
+    .stat-card-title {
+        font-size: 14px;
+        color: #6c757d;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .stat-card-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #212529;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-bottom: 40px;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: right;
+    }
+
+        .custom-table th {
+            background-color: #212529;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .custom-table td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            color: #495057;
+            font-size: 15px;
+        }
+
+        .custom-table tr:hover {
+            background-color: #f1f3f5;
+        }
+
+    .btn-custom-success {
+        background-color: #198754;
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .btn-custom-success:hover {
+            background-color: #146c43;
+        }
+
+    .tenant-badge {
+        background-color: #0dcaf0;
+        color: #000;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 13px;
+    }
+</style>
+
+<div class="page-header">
+    <div>
+        <h2 style="margin: 0; color: #212529;">💼 إدارة فواتير النظام</h2>
+        @using Microsoft.AspNetCore.Identity
+        @inject UserManager<ApplicationUser> UserManager
+        @{
+            var user = await UserManager.GetUserAsync(User);
+        }
+
+        @if (user != null && user.SubscriptionPlan == "Free")
+        {
+            <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 5px solid #ffc107;">
+                <strong>📢 أنت تستخدم الخطة المجانية حالياً (الحد الأقصى 3 فواتير).</strong>
+
+                <form asp-controller="Account" asp-action="UpgradeToPremium" method="post" style="display: inline-block; float: left;">
+                    <button type="submit" class="btn btn-warning btn-sm fw-bold">👑 ترقية الحساب إلى Premium</button>
+                </form>
+                <div style="clear: both;"></div>
+            </div>
+        }
+        <p style="color: #6c757d; margin: 5px 0 0 0;">الشركة الحالية المستعرضة: <strong class="text-dark">@currentTenant</strong></p>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn-custom-success">➕ إضافة فاتورة جديدة</a>
+    </div>
+</div>
+
+<div class="stat-cards-container">
+    <div class="stat-card">
+        <div>
+            <div class="stat-card-title">إجمالي فواتير الشركة</div>
+            <div class="stat-card-value">@ViewData["TotalInvoicesCount"]</div>
+        </div>
+        <div style="font-size: 30px;">📄</div>
+    </div>
+    <div class="stat-card blue">
+        <div>
+            <div class="stat-card-title">عدد العملاء المتعاملين</div>
+            <div class="stat-card-value">@ViewData["UniqueClientsCount"]</div>
+        </div>
+        <div style="font-size: 30px;">👥</div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th>رقم الفاتورة</th>
+                <th>اسم العميل</th>
+                <th style="text-align: center;">معرف الشركة (Tenant)</th>
+                <th>إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #6c757d; padding: 30px;">لا توجد فواتير مسجلة لشركتكم حالياً. ابدأ بإضافة أول فاتورة!</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="font-weight: bold; color: #198754;">@item.InvoiceNumber</td>
+                        <td>@item.ClientName</td>
+                        <td style="text-align: center;">
+                            <span class="tenant-badge">@item.TenantId</span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary fw-bold">📝 تعديل</a>
+
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذه الفاتورة نهائياً؟');" style="margin:0;">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-bold">🗑️ حذف</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

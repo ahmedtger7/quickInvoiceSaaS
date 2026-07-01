@@ -1,0 +1,105 @@
+﻿@model QuickInvoiceSaaS.Models.Invoice
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "إضافة فاتورة جديدة";
+}
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-header {
+        background-color: #198754;
+        color: white;
+        padding: 15px;
+        margin: -30px -30px 30px -30px;
+        border-radius: 8px 8px 0 0;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .form-control-input {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 16px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .btn-submit {
+        background-color: #198754;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 48%;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 4px;
+        width: 48%;
+        box-sizing: border-box;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+</style>
+
+<div class="form-container" dir="rtl">
+    <div class="form-header">
+        <h2 style="margin: 0;">✍️ إنشاء فاتورة جديدة</h2>
+    </div>
+
+    <form asp-controller="InvoicesWeb" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger fw-bold text-center mb-3" role="alert"></div>
+            <label class="form-label">رقم الفاتورة:</label>
+            <input asp-for="InvoiceNumber" name="InvoiceNumber" id="InvoiceNumber" class="form-control-input" placeholder="مثال: INV-2026-005" required />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">اسم العميل:</label>
+            <input asp-for="ClientName" name="ClientName" id="ClientName" class="form-control-input" placeholder="أدخل اسم العميل أو الجهة" required />
+        </div>
+
+        <div class="btn-container">
+            <button type="submit" class="btn-submit">حفظ الفاتورة</button>
+            <a asp-controller="InvoicesWeb" asp-action="Index" class="btn-cancel">إلغاء والعودة</a>
+        </div>
+    </form>
+</div>
