@@ -6,8 +6,8 @@ ENV ASPNETCORE_URLS=http://+:8080
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet restore "quickInvoiceSaaS.csproj"
-RUN dotnet publish "quickInvoiceSaaS.csproj" -c Release -o /app/publish
+RUN dotnet restore "quickInvoiceSaaS/quickInvoiceSaaS.csproj"
+RUN dotnet publish "quickInvoiceSaaS/quickInvoiceSaaS.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
