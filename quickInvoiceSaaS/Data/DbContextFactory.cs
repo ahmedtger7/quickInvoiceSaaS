@@ -11,7 +11,7 @@ namespace QuickInvoiceSaaS.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-     var connectionString = "Host=aws-0-eu-west-1.pooler.supabase.com;Port=6543;Database=postgres;Username=postgres.wgthqndvxujqvvtdkojq;Password=Ekthetiger8579;SSL Mode=Require;Trust Server Certificate=true";
+     var connectionString = "Host=aws-0-eu-west-1.pooler.supabase.com;Port=6543;Database=postgres;Username=postgres.wgthqndvxujqvvtdkojq;Password=Ekthetiger@579;SSL Mode=Require;Trust Server Certificate=true";
 
             optionsBuilder.UseNpgsql(connectionString);
 
