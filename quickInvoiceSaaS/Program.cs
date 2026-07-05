@@ -19,7 +19,7 @@ builder.Services.AddScoped<ITenantService, TenantService>();
 
 // تسجيل الـ DbContext وربطه بـ SQL Server ونص الاتصال من الـ appsettings.json
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // تسجيل خدمات الـ Controllers ودعم الـ Swagger لتجربة الـ APIs
 builder.Services.AddControllers();
